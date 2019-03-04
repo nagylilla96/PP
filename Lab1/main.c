@@ -43,19 +43,22 @@ int *prime(int(*check)(int), int a, int b)
 	return primes;
 }
 
-int *odd_prime(int (*check)(int), int a, int b)
+int *odd_prime(int(*check)(int), int a, int b)
 {
 	int *primes = (int*)calloc(b - a + 1, sizeof(int));
 	int j = 0;
-	for (int i = a; i <= b; i++)
+	if (a <= 2)
 	{
-		if (i % 2 == 1 || i == 2)
+		primes[j] = 2;
+		return primes;
+	}
+	if (a % 2 == 0) a++;
+	for (int i = a; i <= b; i += 2)
+	{
+		if (check(i) == 1)
 		{
-			if (check(i) == 1)
-			{
-				primes[j] = i;
-				j++;
-			}
+			primes[j] = i;
+			j++;
 		}
 	}
 	return primes;
@@ -94,23 +97,26 @@ int main()
 		a = b;
 		b = c;
 	}
-	start_prime = clock();
+	/*start_prime = clock();
 	int *primes = prime(is_prime, a, b);
 	end_prime = clock();
-	time_prime = ((double)(end_prime - start_prime)) / CLOCKS_PER_SEC;
+	time_prime = ((double)(end_prime - start_prime)) / CLOCKS_PER_SEC;*/
+
 	start_odd_prime = clock();
 	int *odd_primes = odd_prime(is_prime, a, b);
 	end_odd_prime = clock();
 	time_odd_prime = ((double)(end_odd_prime - start_odd_prime)) / CLOCKS_PER_SEC;
+
 	start_odd_odd_prime = clock();
 	int *odd_odd_primes = odd_prime(odd_is_prime, a, b);
 	end_odd_odd_prime = clock();
 	time_odd_odd_prime = ((double)(end_odd_odd_prime - start_odd_odd_prime)) / CLOCKS_PER_SEC;
-	print_primes(primes, b - a + 1);
-	printf("Prime time: %lf\n", time_prime);
-	print_primes(odd_primes, b - a + 1);
+
+	//print_primes(primes, b - a + 1);
+	//printf("Prime time: %lf\n", time_prime);
+	//print_primes(odd_primes, b - a + 1);
 	printf("Prime + odd time: %lf\n", time_odd_prime);
-	print_primes(odd_odd_primes, b - a + 1);
+	//print_primes(odd_odd_primes, b - a + 1);
 	printf("Prime + odd + odd time: %lf\n", time_odd_odd_prime);
 	getchar();
 	getchar();

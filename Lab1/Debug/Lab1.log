@@ -1,3 +1,6 @@
 ﻿  main.c
+c:\users\lilla\documents\visual studio 2015\projects\pp\lab1\main.c(83): warning C4101: 'time_prime': unreferenced local variable
+c:\users\lilla\documents\visual studio 2015\projects\pp\lab1\main.c(80): warning C4101: 'start_prime': unreferenced local variable
+c:\users\lilla\documents\visual studio 2015\projects\pp\lab1\main.c(80): warning C4101: 'end_prime': unreferenced local variable
   Lab1.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PP\Lab1\Debug\Lab1.exe
   Lab1.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PP\Lab1\Debug\Lab1.pdb (Full PDB)
