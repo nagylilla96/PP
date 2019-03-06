@@ -4,7 +4,7 @@ is_prime(X) :-
     prime(X, 2).
 
 prime(X, Y) :-
-    Y >= X -> true;
+    Y > floor(sqrt(X)) -> true;
     0 is X mod Y -> false;
     Z is Y + 1,
     prime(X, Z).
