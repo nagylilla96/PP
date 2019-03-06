@@ -1,0 +1,6 @@
+is_prime(2).
+is_prime(X) :-
+    X > 1,
+    prime(X, 2).
+
+

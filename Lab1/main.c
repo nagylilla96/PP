@@ -120,6 +120,17 @@ void run_ex1()
 	printf("Prime + odd + odd time: %lf\n", time_odd_odd_prime);
 }
 
+char *generate_sequence(int n)
+{
+	srand(time(NULL));
+	char *seq = (char*)malloc(n);
+
+	for (int i = 0; i < n; i++)
+	{
+		seq[i] = rand();
+	}
+}
+
 int main()
 {
 	run_ex1();
