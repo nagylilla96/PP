@@ -4,7 +4,27 @@ is_prime(X) :-
     prime(X, 2).
 
 prime(X, Y) :-
-    Y >= floor(sqrt(X)) -> true;
+    Y > floor(sqrt(X)) -> true;
     0 is X mod Y -> false;
     Z is Y + 1,
     prime(X, Z).
+
+list_primes(A, B, []).
+
+list_primes(A, B, L) :-
+    A =< 2,
+    A =< B,
+    append([], [2], L).
+
+list_primes(A, B, [A|L]) :-
+    is_prime(A),
+    A1 is A + 1,
+    list_primes(A, B, L).
+
+get_primes(A, B, X, L) :-
+    A =< B,
+    is_prime(X) -> append(L, X, L1), L1;
+    X1 is X + 1,
+    get_primes(A, B, X1, L1).
+
+
