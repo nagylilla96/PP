@@ -55,3 +55,17 @@ entropy(N, R, Time) :-
     Z is T - O,
     R is -(O / T) * log(O / T) / log(2) - (Z / T) * log(Z / T) / log(2),
     statistics(runtime, [Time|_]).
+
+% ex3
+
+my_sum(0, 0).
+my_sum(X, R) :- sum_int(X, X - 1, R).
+sum_int(N, 0, R) :- R is 4 / (1 + (0.5 / N)^2).
+sum_int(N, I, R) :-
+    I1 is I - 1,
+    sum(N, I1, R1),
+    R is R1 + (4 / (1 + ((I + 0.5) / N)^2)).
+
+calc_pi(X, R) :-
+    my_sum(X, R1),
+    R is (1/X) * R1.
