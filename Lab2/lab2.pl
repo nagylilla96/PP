@@ -63,7 +63,7 @@ my_sum(X, R) :- sum_int(X, X - 1, R).
 sum_int(N, 0, R) :- R is 4 / (1 + (0.5 / N)^2).
 sum_int(N, I, R) :-
     I1 is I - 1,
-    sum(N, I1, R1),
+    sum_int(N, I1, R1),
     R is R1 + (4 / (1 + ((I + 0.5) / N)^2)).
 
 calc_pi(X, R) :-

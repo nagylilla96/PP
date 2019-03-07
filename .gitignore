@@ -1,4 +1,6 @@
 *.opendb
 *.vs
 *.db
-
+*.suo
+*.VC.db
+.gitignore
