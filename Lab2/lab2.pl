@@ -83,8 +83,14 @@ inside_circle(N, M) :-
     N1 is N - 1,
     inside_circle(N1, M1),
     gen_coord(X, Y),
-    X^2 + Y^2 =< 1,
+    (X^2 + Y^2) =< 1,
     M is M1 + 1.
+
+inside_circle(N, M) :-
+    N1 is N - 1,
+    inside_circle(N1, M),
+    gen_coord(X, Y),
+    X^2 + Y^2 > 1.
 
 pi_is(N, P) :- 
     inside_circle(N, M),
