@@ -66,6 +66,26 @@ sum_int(N, I, R) :-
     sum_int(N, I1, R1),
     R is R1 + (4 / (1 + ((I + 0.5) / N)^2)).
 
-calc_pi(X, R) :-
+calc_pi(X, R, T) :-
     my_sum(X, R1),
-    R is (1/X) * R1.
+    R is (1/X) * R1,
+    statistics(runtime, [T|_]).
+
+% ex4
+
+gen_coord(X, Y) :- 
+    X is random_float,
+    Y is random_float.
+
+inside_circle(0, 0) :- !.
+
+inside_circle(N, M) :-
+    N1 is N - 1,
+    inside_circle(N1, M1),
+    gen_coord(X, Y),
+    X^2 + Y^2 =< 1,
+    M is M1 + 1.
+
+pi_is(N, P) :- 
+    inside_circle(N, M),
+    P is 4 * M / N.
