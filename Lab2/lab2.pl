@@ -88,10 +88,9 @@ inside_circle(N, M) :-
 
 inside_circle(N, M) :-
     N1 is N - 1,
-    inside_circle(N1, M),
-    gen_coord(X, Y),
-    X^2 + Y^2 > 1.
+    inside_circle(N1, M).
 
-pi_is(N, P) :- 
+pi_is(N, P, T) :- 
     inside_circle(N, M),
-    P is 4 * M / N.
+    P is 4 * M / N,
+    statistics(runtime, [T|_]).
