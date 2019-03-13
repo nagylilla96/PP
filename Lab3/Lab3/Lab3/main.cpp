@@ -10,7 +10,7 @@ using namespace std::chrono;
 int is_perfect(int x)
 {
 	int sum = 0;
-	for (int i = 1; i < x; i++)
+	for (int i = 1; i <= x / 2; i++)
 	{
 		if (x % i == 0)
 		{
@@ -27,7 +27,7 @@ void checkInterval(int start, int end)
 	{
 		if (is_perfect(i))
 		{
-			printf("%d\n", i);
+			cout << i << endl;
 		}
 	}
 }
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
 	t_end = high_resolution_clock::now();
 
-	cout << "Time = " << duration_cast<microseconds>(t_end - t_start).count() << " ms" << endl;
+	cout << "Time = " << duration_cast<chrono::duration<double>>(t_end - t_start).count() << " s" << endl;
 
 	return 0;
 }
