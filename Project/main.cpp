@@ -5,14 +5,14 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include <boost/lexical_cast.hpp>
 using namespace std;
-using boost::multiprecision::uint1024_t;
+using namespace boost::multiprecision;
 
 #define START 2
 #define END ULLONG_MAX
 
 int is_prime(uint1024_t x)
 {
-	for (uint1024_t i = 2; i <= x / 2; i++)
+	for (uint1024_t i = 2; i <= (uint1024_t) boost::multiprecision::sqrt(x); i++)
 	{
 		if (x % i == 0)
 		{
@@ -70,6 +70,7 @@ void smarandache(uint1024_t a, uint1024_t b)
 	
 	for (auto const& x: primes)
 	{
+		cout << "WHAT" << endl;
 		if (conc > b)
 		{
 			cout << "{" << conc.str() << "}";
