@@ -1,17 +1,41 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
+#include <limits.h>
+#include <gmp.h>
+#include <string.h>
+#include <chrono>
 using namespace std;
+using namespace std::chrono;
 
-int is_prime(int x)
+#define START 2
+#define END ULLONG_MAX
+
+int is_prime(const mpz_t x, int y)
 {
-	if (x == 2) return 1;
-	for (int i = 3; i <= floor(sqrt(x)); i += 2)
+	mpz_t xx;
+	mpz_init_set(xx, x);
+	mpz_t square, i;
+	mpz_init(square);
+	mpz_sqrt(square, xx);
+	mpz_init_set_si(i, 2);
+
+	if (y == 1) cout << "Is prime?" << endl;
+
+	while (mpz_cmp(i, square) <= 0)
 	{
-		if (x % i == 0)
+		//if (y == 1) gmp_printf("i = %Zd \n", i);
+		mpz_t res;
+		mpz_init(res);
+		mpz_fdiv_r(res, x, i);
+		if (mpz_cmp_si(res, 0) == 0)
 		{
+			if (y == 1) cout << "NO" << endl;
 			return 0;
 		}
+		mpz_add_ui(i, i, 1);
 	}
+	if (y == 1) cout << "YES" << endl;
 	return 1;
 }
 
@@ -19,88 +43,114 @@ int is_prime(int x)
 vector<int> getPrimes()
 {
 	vector<int> primes;
-	int i = 2;
+	mpz_t i;
+	mpz_init_set_si(i, 3);
 
 	while (primes.size() < 100)
 	{
-		if (is_prime(i))
+		if (is_prime(i, 0))
 		{
-			primes.push_back(i);
+			primes.push_back(mpz_get_ui(i));
 		}
-		i++;
+		mpz_add_ui(i, i, 1);
 	}
 	return primes;
 }
 
-void print_primes(vector<int> primes, int n)
+void print_results(vector<int> nums, int n)
 {
-	for (auto const& x : primes)
+	for (auto const& x : nums)
 	{
 		cout << x << " ";
 	}
 }
 
-int concat(int a, int b)
-{
-	int c = b;
-	do
-	{
-		a *= 10;
-		c /= 10;
-	} while (c);
+//void concatenate(mpz_t ret, mpz_t a, mpz_t b)
+//{
+//	mpz_t c, res;
+//	mpz_init_set(c, b);
+//	do
+//	{
+//		mpz_mul(a, a, 10);
+//		mpz_fdiv_q(c, c, 10);
+//	} while (c);
+//
+//	mpz_init_set(res, a);
+//	mpz_add(res, res, b);
+//}
 
-	return a + b;
-}
-
-vector<int> smarandache(int b)
+void smarandache(mpz_t a, mpz_t b)
 {
-	vector<int> numbers;
+	vector<int> primes = getPrimes();
 	int index = 0;
-	int prime = 2;
+	mpz_t conc;
+	mpz_init_set_si(conc, 2);
 
-	if (b < 2) return numbers;
+	gmp_printf("a = %Zd \n", a);
+	gmp_printf("b = %Zd \n", b);
 
-	numbers.push_back(prime);
+	//cout << "EEEELO" << endl;
 
-	while (numbers.at(index) <= b)
+	if (mpz_cmp_ui(conc, 2) > 0) return;
+
+	int ccc = 0;
+
+	//cout << "EEEEEELO" << endl;
+
+	for (auto const& x : primes)
 	{
-		prime++;
-		if (is_prime(prime))
+		//cout << "WHAT" << endl;
+		if (mpz_cmp(conc, b) == 0)
 		{
-			int concated = concat(numbers.at(index), prime);
-			if (is_prime(concated))
-			{
-				numbers.push_back(concated);
-				index++;
-			}
+			ccc = 1;
+			cout << "equality bitchezzzz" << endl;
 		}
+		if (mpz_cmp(conc, b) > 0)
+		{
+			//cout << "{" << conc.str() << "}";
+			return;
+		}
+		if (is_prime(conc, ccc) && (mpz_cmp(conc, a) >= 0))
+		{
+			cout << ".";
+			gmp_printf("%Zd \n", conc);
+		}
+		char *mystr = (char*)malloc(1000);
+		mpz_get_str(mystr, 10, conc);
+		string str(mystr);
+		strcpy(mystr, (str + to_string(x)).c_str());
+		mpz_set_str(conc, mystr, 10);
+		gmp_printf("\n[%Zd]\n ", conc);
 	}
-
 }
 
-int main(int argc, char** argv)
+int main()
 {
-	if (argc != 3)
-	{
-		cout << "Usage: main.exe <start> <end>" << endl;
-		return -1;
-	}
+	mpz_t a;
+	mpz_init_set_si(a, 2);
+	mpz_t b;
+	mpz_init_set_str(b, "2357111317192329313741434753596167717379838997101103", 10);
+	//uint1024_t b = 100000;
 
-	int a = atoi(argv[1]);
-	int b = atoi(argv[2]);
-	int nr;
+	//print_results(getPrimes(), 100);
+
 	vector<int> primes;
 
-	if (a > b)
+	try
 	{
-		int c = b;
-		b = a;
-		a = c;
+		auto start = chrono::high_resolution_clock::now();
+		smarandache(a, b);
+		auto finish = std::chrono::high_resolution_clock::now();
+		cout << "Time = " << duration_cast<chrono::duration<double>>(finish - start).count() << " s" << endl;
+	}
+	catch (exception &e)
+	{
+		printf("%s\n", e.what());
 	}
 
-	primes = getPrimes();
+	cout << endl;
 
-	print_primes(primes, primes.size());
+	//print_results(smars, smars.size());
 
 	return 0;
 }

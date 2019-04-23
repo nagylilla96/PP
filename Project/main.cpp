@@ -11,26 +11,28 @@ using namespace std::chrono;
 #define START 2
 #define END ULLONG_MAX
 
-int is_prime(const mpz_t x)
+int is_prime(const mpz_t x, int y)
 {
-	mpz_t xx;
-	mpz_init_set(xx, x);	
 	mpz_t square, i;
-	mpz_init(square);
-	mpz_sqrt(square, xx);
+	mpz_init_set(square, x);
+	mpz_sqrt(square, x);
 	mpz_init_set_si(i, 2);
+	
+	if (y == 1) cout << "Is prime?" << endl;
 	
 	while (mpz_cmp(i, square) <= 0)
 	{
-		mpz_t res;
-		mpz_init(res);
-		mpz_fdiv_r(res, x, i);
-		if (mpz_cmp_si(res, 0) == 0)
+		//if (y == 1) gmp_printf("i = %Zd \n", i);
+		if (mpz_divisible_p(x, i) != 0)
 		{
+			if (y == 1) cout << "NO" << endl;
 			return 0;
 		}
 		mpz_add_ui(i, i, 1);
 	}
+	if (y == 1) cout << "YES" << endl;
+	mpz_clear(square);
+	mpz_clear(i);
 	return 1;
 }
 
@@ -43,12 +45,13 @@ vector<int> getPrimes()
 
 	while (primes.size() < 100)
 	{
-		if (is_prime(i))
+		if (is_prime(i, 0))
 		{
 			primes.push_back(mpz_get_ui(i));
 		}
 		mpz_add_ui(i, i, 1);
 	}
+	mpz_clear(i);
 	return primes;
 }
 
@@ -88,17 +91,25 @@ void smarandache(mpz_t a, mpz_t b)
 
 	if (mpz_cmp_ui(conc, 2) > 0) return;
 	
+	int ccc = 0;
+	
 	//cout << "EEEEEELO" << endl;
 	
 	for (auto const& x: primes)
 	{
 		//cout << "WHAT" << endl;
+		if (mpz_cmp(conc, b) == 0) 
+		{
+			ccc = 1;
+			cout << "equality bitchezzzz" << endl;
+		}
 		if (mpz_cmp(conc, b) > 0)
 		{
 			//cout << "{" << conc.str() << "}";
+			mpz_clear(conc);
 			return;
 		}
-		if (is_prime(conc) && (mpz_cmp(conc, a) >= 0))
+		if (is_prime(conc, ccc) && (mpz_cmp(conc, a) >= 0))
 		{
 			cout << ".";
 			gmp_printf ("%Zd \n", conc);
@@ -110,6 +121,7 @@ void smarandache(mpz_t a, mpz_t b)
 		mpz_set_str(conc, mystr, 10);
 		gmp_printf ("\n[%Zd]\n ", conc);	
 	}
+	mpz_clear(conc);
 } 	
 
 int main()
@@ -117,7 +129,7 @@ int main()
 	mpz_t a;
 	mpz_init_set_si(a, 2);
 	mpz_t b;
-	mpz_init_set_str(b, "2357111317192329313741434753596167717379838997101104", 10);
+	mpz_init_set_str(b, "2357111317192329313741434753596167717379838997101103", 10);
 	//uint1024_t b = 100000;
 
 	//print_results(getPrimes(), 100);
@@ -135,6 +147,9 @@ int main()
 	{
 		printf("%s\n", e.what());
 	}
+	
+	mpz_clear(a);
+	mpz_clear(b);
 	
 	cout << endl;
 
