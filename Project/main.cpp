@@ -8,6 +8,8 @@
 using namespace std;
 using namespace std::chrono;
 
+# TODO miller-rabin pseudo-prime algorithm
+
 #define START 2
 #define END ULLONG_MAX
 
