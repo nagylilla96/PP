@@ -8,10 +8,103 @@
 using namespace std;
 using namespace std::chrono;
 
-# TODO miller-rabin pseudo-prime algorithm
+// TODO miller-rabin pseudo-prime algorithm https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
 
 #define START 2
 #define END ULLONG_MAX
+
+void power(mpz_t x, mpz_t y, const mpz_t p, mpz_t res)
+{
+	mpz_t temp;
+	mpz_init(temp);
+	mpz_set_si(res, 1);
+	mpz_fdiv_q(x, x, p);
+	while (mpz_cmp_d(y, 0) > 0)
+	{
+		if (mpz_odd_p(y) != 0)
+		{
+			mpz_mul(temp, res, x);
+			mpz_fdiv_q(res, temp, p);
+		}
+		mpz_fdiv_q_2exp(y, y, 1);			
+		mpz_mul(temp, x, x);
+		mpz_fdiv_q(x, temp, p);		
+	}
+	mpz_clear(temp);
+}
+
+bool millerTest(mpz_t d, mpz_t n)
+{
+	mpz_t a, res, temp;
+	mpz_init_set_si(a, rand() % (INT_MAX - 2) + 2);
+	mpz_init(res);
+	mpz_init(temp);
+	
+	power(a, d, n, res);
+	
+	if (mpz_cmp_d(res, 1) == 0 || mpz_cmp(res, n - 1) == 0)
+	{
+		mpz_clear(a);
+		mpz_clear(res);
+		mpz_clear(temp);
+		return true;
+	}
+	
+	while (mpz_cmp(d, n - 1) != 0)
+	{
+		mpz_mul(temp, res, res);
+		mpz_fdiv_q(res, temp, n);
+		mpz_mul_2exp(d, d, 1);
+		
+		if (mpz_cmp_d(res, 1) == 0) 
+		{
+			mpz_clear(a);
+			mpz_clear(res);
+			mpz_clear(temp);
+			return false;
+		}
+		if (mpz_cmp(res, n - 1) == 0) 
+		{
+			mpz_clear(a);
+			mpz_clear(res);
+			mpz_clear(temp);
+			return true;
+		}
+	}
+	
+	mpz_clear(a);
+	mpz_clear(res);
+	mpz_clear(temp);
+	
+	return false;
+}
+
+bool isPrime(mpz_t n, int k)
+{
+	if (mpz_cmp_d(n, 1) <= 0 || mpz_cmp_d(n, 4) == 0) return false;
+	if (mpz_cmp_d(n, 3) <= 0) return true;
+	
+	mpz_t d;
+	mpz_init_set(d, n - 1);
+	
+	while (mpz_odd_p(d) != 0)
+	{
+		mpz_fdiv_q_2exp(d, d, 1);	
+	}
+	
+	for (int i = 0; i < k; i++) 
+	{
+		if (!millerTest(d, n))
+		{
+			mpz_clear(d);
+			return false;
+		}
+	}
+	
+	mpz_clear(d);
+	
+	return true;
+}
 
 int is_prime(const mpz_t x)
 {
@@ -76,7 +169,7 @@ void smarandache(mpz_t a, mpz_t b)
 			mpz_clear(conc);
 			return;
 		}
-		if (is_prime(conc) && (mpz_cmp(conc, a) >= 0))
+		if (isPrime(conc, 5) && (mpz_cmp(conc, a) >= 0))
 		{
 			gmp_printf ("%Zd \n", conc);
 		}
