@@ -35,23 +35,32 @@ void power(mpz_t x, mpz_t y, const mpz_t p, mpz_t res)
 
 bool millerTest(mpz_t d, mpz_t n)
 {
-	mpz_t a, res, temp;
+	mpz_t a, res, temp, n1;
 	mpz_init_set_si(a, rand() % (INT_MAX - 2) + 2);
 	mpz_init(res);
 	mpz_init(temp);
+	mpz_init(n1);
+	
+	cout << "---" << endl;
+	
+	mpz_sub_ui(n1, n, 1);
 	
 	power(a, d, n, res);
 	
-	if (mpz_cmp_d(res, 1) == 0 || mpz_cmp(res, n - 1) == 0)
+	if (mpz_cmp_d(res, 1) == 0 || mpz_cmp(res, n1) == 0)
 	{
 		mpz_clear(a);
 		mpz_clear(res);
 		mpz_clear(temp);
+		mpz_clear(n1);
 		return true;
 	}
 	
-	while (mpz_cmp(d, n - 1) != 0)
+	cout << "---" << endl;
+	
+	while (mpz_cmp(d, n1) != 0)
 	{
+		cout << "---" << endl;
 		mpz_mul(temp, res, res);
 		mpz_fdiv_q(res, temp, n);
 		mpz_mul_2exp(d, d, 1);
@@ -61,13 +70,15 @@ bool millerTest(mpz_t d, mpz_t n)
 			mpz_clear(a);
 			mpz_clear(res);
 			mpz_clear(temp);
+			mpz_clear(n1);
 			return false;
 		}
-		if (mpz_cmp(res, n - 1) == 0) 
+		if (mpz_cmp(res, n1) == 0) 
 		{
 			mpz_clear(a);
 			mpz_clear(res);
 			mpz_clear(temp);
+			mpz_clear(n1);
 			return true;
 		}
 	}
@@ -75,28 +86,38 @@ bool millerTest(mpz_t d, mpz_t n)
 	mpz_clear(a);
 	mpz_clear(res);
 	mpz_clear(temp);
-	
+	mpz_clear(n1);
 	return false;
 }
 
 bool isPrime(mpz_t n, int k)
 {
+	
 	if (mpz_cmp_d(n, 1) <= 0 || mpz_cmp_d(n, 4) == 0) return false;
 	if (mpz_cmp_d(n, 3) <= 0) return true;
 	
-	mpz_t d;
-	mpz_init_set(d, n - 1);
+	mpz_t d, n1;
+	mpz_init(n1);
+	mpz_sub_ui(n1, n, 1);
+	mpz_init_set(d, n1);
+	mpz_clear(n1);
+	
+	
 	
 	while (mpz_odd_p(d) != 0)
 	{
 		mpz_fdiv_q_2exp(d, d, 1);	
 	}
 	
+	cout << "---" << endl;
+	
 	for (int i = 0; i < k; i++) 
 	{
+		cout << "i = " << i << endl;
 		if (!millerTest(d, n))
 		{
 			mpz_clear(d);
+			
 			return false;
 		}
 	}
@@ -117,6 +138,8 @@ int is_prime(const mpz_t x)
 	{
 		if (mpz_divisible_p(x, i) != 0)
 		{
+			mpz_clear(square);
+			mpz_clear(i);
 			return 0;
 		}
 		mpz_add_ui(i, i, 1);
@@ -156,16 +179,22 @@ void print_results(vector<int> nums, int n)
 void smarandache(mpz_t a, mpz_t b)
 {
 	vector<int> primes = getPrimes();
-	int index = 0;
 	mpz_t conc;
 	mpz_init_set_si(conc, 2);
+	
 
-	if (mpz_cmp_ui(conc, 2) > 0) return;
+	if (mpz_cmp_ui(conc, 2) > 0) 
+	{
+		mpz_clear(conc);
+		return;
+	}
 	
 	for (auto const& x: primes)
 	{
+		
 		if (mpz_cmp(conc, b) > 0)
 		{
+			
 			mpz_clear(conc);
 			return;
 		}
@@ -173,12 +202,14 @@ void smarandache(mpz_t a, mpz_t b)
 		{
 			gmp_printf ("%Zd \n", conc);
 		}
+		
 		char *mystr = (char*) malloc(1000);
 		mpz_get_str(mystr, 10, conc);
 		string str(mystr);
 		strcpy(mystr, (str + to_string(x)).c_str());
 		mpz_set_str(conc, mystr, 10);
 		gmp_printf ("\n[%Zd]\n ", conc);
+		free(mystr);
 	}
 	mpz_clear(conc);
 } 	
