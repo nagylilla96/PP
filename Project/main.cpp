@@ -60,8 +60,7 @@ void smarandache(mpz_t a, mpz_t b)
 {
 	vector<long long int> primes = getPrimes();
 	mpz_t conc;
-	mpz_init_set_si(conc, 2);
-	
+	mpz_init_set_si(conc, 2);	
 
 	if (mpz_cmp_ui(conc, 2) > 0) 
 	{
@@ -71,10 +70,8 @@ void smarandache(mpz_t a, mpz_t b)
 	
 	for (auto const& x: primes)
 	{
-		
 		if (mpz_cmp(conc, b) > 0)
-		{
-			
+		{			
 			mpz_clear(conc);
 			return;
 		}
@@ -83,12 +80,11 @@ void smarandache(mpz_t a, mpz_t b)
 			gmp_printf ("%Zd \n", conc);
 		}
 		
-		char *mystr = (char*) malloc(1000);
+		char *mystr = (char*) malloc(10000);
 		mpz_get_str(mystr, 10, conc);
 		string str(mystr);
 		strcpy(mystr, (str + to_string(x)).c_str());
 		mpz_set_str(conc, mystr, 10);
-		//gmp_printf ("\n[%Zd]\n ", conc);
 		free(mystr);
 	}
 	mpz_clear(conc);
