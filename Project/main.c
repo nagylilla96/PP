@@ -14,6 +14,22 @@ unsigned long long int* primes;
 int length;
 mpz_t *numbers;
 
+int isprime(int x)
+{
+	int i = 2;
+	int square = floor(sqrt(x));
+	
+	while (i <= square)
+	{
+		if (x % i == 0)
+		{
+			return 0;
+		}
+		i++;
+	}
+	return 1;
+}
+
 int is_prime(const mpz_t x)
 {
 	mpz_t square, i;
@@ -102,7 +118,7 @@ void getNumbers()
 
 void smarandache(unsigned long long int *primes, int id)
 {	
-	printf("\nid = %d, threads = %d\n", id, threads); 
+	//printf("\nid = %d, threads = %d\n", id, threads); 
 	
 	for (int i = id; i < length; i += threads)
 	{
@@ -119,7 +135,7 @@ void *threadFunc(void *args)
 	
 	smarandache(primes, id);
 	
-	printf("\nFinished running %d\n", id);	
+	free(args);
 	
 	return NULL;
 }
@@ -133,8 +149,10 @@ void run()
 	start = clock();
 	for (int i = 0; i < threads; i++) 
 	{
-		pthread_create(&th[i], NULL, threadFunc, &i);
-		printf("Creating thread %d\n", i);
+		//printf("Creating thread %d\n", i);
+		int *arg = malloc(sizeof(*arg));
+		*arg = i;
+		pthread_create(&th[i], NULL, threadFunc, arg);
 	}	
 	for (int i = 0; i < threads; i++)
 	{
@@ -154,16 +172,16 @@ int main(int argc, char **argv)
 	primes = getPrimes(&length);
 	getNumbers();
 	
-	if (argc != 2) return -1;
-	threads = atoi(argv[1]);
-	run();
+	//if (argc != 2) return -1;
+	//threads = atoi(argv[1]);
+	//run();
 
-	//for (int i = 1; i <= 8; i++) 
-	//{
-	//	printf("\nRunning with %d threads!\n", i);
-	//	threads = i;
-	//	run(threads);
-	//}
+	for (int i = 1; i <= 8; i++) 
+	{
+		printf("\nRunning with %d threads!\n", i);
+		threads = i;
+		run();
+	}
 	
 	mpz_clear(a);
 	mpz_clear(b);
