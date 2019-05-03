@@ -1,3 +1,5 @@
+:- use_module(library(clpfd)).
+
 is_prime(2).
 is_prime(X) :-
     X > 1,
@@ -33,26 +35,27 @@ smarandache(_, B, Num, _) :-
 smarandache(A, B, Num, [F|E]) :-
 	A > Num,
 	smarandache(A, B, F, E).	
+	
+smarandache(A, B, Num, [F|E]) :-
+	not(crypto_is_prime(Num, [])),
+	atom_concat(Num, F, X),
+	atom_number(X, Y),
+	%write('['),
+	%write(Num),
+	%writeln(']'),
+	smarandache(A, B, Y, E).
 
 smarandache(A, B, Num, [F|E]) :-
-	is_prime(Num),
+	crypto_is_prime(Num, []),
 	writeln(Num),
 	atom_concat(Num, F, X),
 	atom_number(X, Y),
 	smarandache(A, B, Y, E).
 	
-smarandache(A, B, Num, [F|E]) :-
-	not(is_prime(Num)),
-	atom_concat(Num, F, X),
-	atom_number(X, Y),
-	write('['),
-	write(Num),
-	writeln(']'),
-	smarandache(A, B, Y, E).
-
-	
-ex(A, B, T) :- 
+ex(T) :- 
+	A is 2,
+	B is 2**1000000,
 	statistics(walltime, _),
-	list_primes(2, 200, [F|L]), 
+	list_primes(2, 7500, [F|L]), 
 	smarandache(A, B, F, L),
 	statistics(walltime, [_|[T]]).

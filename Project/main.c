@@ -116,7 +116,7 @@ void getNumbers()
 	mpz_clear(conc);
 }
 
-void smarandache(unsigned long long int *primes, int id)
+void smarandache(int id)
 {	
 	//printf("\nid = %d, threads = %d\n", id, threads); 
 	
@@ -133,7 +133,7 @@ void *threadFunc(void *args)
 {
 	int id = *((int*) args);
 	
-	smarandache(primes, id);
+	smarandache(id);
 	
 	free(args);
 	
