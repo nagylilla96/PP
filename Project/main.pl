@@ -51,9 +51,13 @@ smarandache(Num) :-
 	writeln(Num).
 	
 work(Q) :- 
-	%writeln("Werk"),
+	thread_get_message(Q, getnum(Num)),
+	Num == 0, writeln("Got finish message").
+	
+work(Q) :- 
 	thread_get_message(Q, getnum(Num)),
 	smarandache(Num),
+	write("["), write(Num), writeln("]"),
 	work(Q).
 
 create_workers(_, 0, _).
@@ -62,8 +66,6 @@ create_workers(Q, N, [Id|L]) :-
 	writeln("Creating workers"),
 	thread_create(work(Q), Id, []),
 	N1 is N - 1,
-	write("id = "),
-	writeln(Id),
 	create_workers(Q, N1, L).
 	
 join_threads([]).
@@ -72,7 +74,11 @@ join_threads([H|T]) :-
 	thread_join(H),
 	join_threads(T).
 	
-master(_, []).	
+master(Q, []) :- 
+	M is 0,
+	writeln("Sending finish message"),
+	thread_send_message(Q, getnum(M)).
+	
 	
 master(Q, [H|T]) :-
 	thread_send_message(Q, getnum(H)),

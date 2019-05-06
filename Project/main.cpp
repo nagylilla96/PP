@@ -111,7 +111,7 @@ public:
 		//cout << "id = " << id << ", threads = " << threads << endl;
 		for (int i = id; i < length; i += threads)
 		{
-			if (mpz_probab_prime_p(numbers[i], 15) == 2 && (mpz_cmp(numbers[i], a) >= 0))
+			if (mpz_probab_prime_p(numbers[i], 15) == 1 && (mpz_cmp(numbers[i], a) >= 0))
 			{
 				gmp_printf("%Zd \n", numbers[i]);
 			}
