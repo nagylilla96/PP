@@ -117,11 +117,11 @@ void getNumbers()
 	mpz_clear(conc);
 }
 
-void smarandache(int id)
+void smarandache()
 {	
 	//printf("\nid = %d, threads = %d\n", id, threads); 
-	
-	for (int i = id; i < length; i += threads)
+	#pragma omp parallel for
+	for (int i = 0; i < length; i ++)
 	{
 		if (mpz_probab_prime_p(numbers[i], 15) == 2 && (mpz_cmp(numbers[i], a) >= 0))
 		{
@@ -136,11 +136,9 @@ void run()
 	double cpu_time_used;
 	
 	start = clock();
-	#pragma omp parallel for
-	for (int i = 0; i < threads; i++) 
-	{
-		smarandache(i);
-	}
+	
+	smarandache();
+	
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 	printf("Time = %lf s", cpu_time_used);
