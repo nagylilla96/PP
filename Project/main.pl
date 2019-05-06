@@ -42,42 +42,39 @@ list_numbers(A, B, Num, [F|E], [Num|L]) :-
 	atom_number(X, Y),
 	%writeln(Y),
 	list_numbers(A, B, Y, E, L).
-	
-smarandache([]).
 
-smarandache([F|E]) :-
-	not(crypto_is_prime(F, [])),
-	smarandache(E).
+smarandache(Num) :-
+	not(crypto_is_prime(Num, [])).
 
-smarandache([F|E]) :-
-	crypto_is_prime(F, []),
-	writeln(F),
-	smarandache(E).
+smarandache(Num) :-
+	crypto_is_prime(Num, []),
+	writeln(Num).
 	
-worker(L
+work(Q) :- 
+	thread_get_message(Q, getnum(Num)),
+	smarandache(Num).
 	
-create_threads(0, _).
-	
-create_threads(Threads, L) :-
-	Id is Threads - 1,
-	thread_create(worker(L), Id, []),
-	create_threads(Id, L).
-	
-create_workers(Id, List, Threads) :-
-	forall(between(1, Threads, _),
-	thread_create(do_work(Id, List), _, [])).
-	
-join_threads(0).
+create_workers(Q, Threads) :-
+	Nr is Threads - 1,
+	foreach(between(0, Nr, X), thread_create(work(Q), X, [])).
 	
 join_threads(Threads) :-
-	Id is Threads - 1,
-	thread_join(Id, S),
-	join_threads(Id).
+	Nr is Threads - 1,
+	foreach(betweeen(0, Nr, X), thread_join(X)).
 	
-master(Threads, L) :-
-	create_threads(Threads, L),
-	join_threads(Threads).
+master(_, [], _, _).	
 
+master(_, _, N, Threads) :- 
+	N == Threads.
+	
+master([H|T], N, Threads) :-
+	Id is N mod Threads,
+	thread_send_message(Id, getnum(H)),
+	N1 is N + 1,
+	master(T, N1, Threads). 	
+	
+create_master(List, Threads) :-
+	master(List, 0, Threads).
 	
 ex(Time, Threads) :- 
 	A is 2,
@@ -85,6 +82,8 @@ ex(Time, Threads) :-
 	list_primes(2, 7500, [F|L]), 
 	list_numbers(A, B, F, L, C),
 	statistics(walltime, _),
-	master(Threads, C),
-	smarandache(C),
+	message_queue_create(Q),
+	create_master(C, Threads),
+	create_workers(Q, Threads),
+	join_threads(Threads),
 	statistics(walltime, [_|[Time]]).
