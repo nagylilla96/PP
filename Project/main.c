@@ -14,22 +14,6 @@ unsigned long long int* primes;
 int length;
 mpz_t *numbers;
 
-int isprime(int x)
-{
-	int i = 2;
-	int square = floor(sqrt(x));
-	
-	while (i <= square)
-	{
-		if (x % i == 0)
-		{
-			return 0;
-		}
-		i++;
-	}
-	return 1;
-}
-
 int is_prime(const mpz_t x)
 {
 	mpz_t square, i;
@@ -118,8 +102,6 @@ void getNumbers()
 
 void smarandache(int id)
 {	
-	//printf("\nid = %d, threads = %d\n", id, threads); 
-	
 	for (int i = id; i < length; i += threads)
 	{
 		int probprime = mpz_probab_prime_p(numbers[i], 15);
@@ -150,7 +132,6 @@ void run()
 	start = clock();
 	for (int i = 0; i < threads; i++) 
 	{
-		//printf("Creating thread %d\n", i);
 		int *arg = malloc(sizeof(*arg));
 		*arg = i;
 		pthread_create(&th[i], NULL, threadFunc, arg);
@@ -172,10 +153,6 @@ int main(int argc, char **argv)
 	mpz_ui_pow_ui(b, 2, 1000000);
 	primes = getPrimes(&length);
 	getNumbers();
-	
-	//if (argc != 2) return -1;
-	//threads = atoi(argv[1]);
-	//run();
 
 	for (int i = 1; i <= 8; i++) 
 	{

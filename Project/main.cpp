@@ -66,8 +66,7 @@ void print_results(vector<unsigned long long int> nums, int n)
 }
 
 void getNumbers()
-{
-	
+{	
 	numbers = (mpz_t*) malloc(sizeof(mpz_t) * length);
 	
 	mpz_t conc;
@@ -82,16 +81,12 @@ void getNumbers()
 	
 	for (auto const& x: primes)
 	{
-		//cout << "FASZ" << endl;
 		if (mpz_cmp(conc, b) > 0)
 		{			
-			//cout << "FASZ" << endl;
 			mpz_clear(conc);
 			return;
 		}		
-		//gmp_printf("[%Zd] \n", conc);
-		mpz_init_set(numbers[i], conc);
-		
+		mpz_init_set(numbers[i], conc);		
 		char *mystr = (char*) malloc(10000);
 		mpz_get_str(mystr, 10, conc);		
 		string str(mystr);
@@ -108,7 +103,6 @@ class Runner
 public:
 	void smarandache(int id)
 	{
-		//cout << "id = " << id << ", threads = " << threads << endl;
 		for (int i = id; i < length; i += threads)
 		{
 			int probprime = mpz_probab_prime_p(numbers[i], 15);
@@ -128,7 +122,6 @@ void run()
 	
 	for (int i = 0; i < threads; i++)
 	{
-		//cout << "Creating thread " << i << endl;
 		v.push_back(thread(&Runner::smarandache, runner, i));
 	}
 	for(auto & th: v)
