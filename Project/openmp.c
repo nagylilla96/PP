@@ -130,34 +130,16 @@ void smarandache(int id)
 	}
 } 	
 
-void *threadFunc(void *args)
-{
-	int id = *((int*) args);
-	
-	smarandache(id);
-	
-	free(args);
-	
-	return NULL;
-}
-
 void run()
 {
 	clock_t start, end;
 	double cpu_time_used;
-	pthread_t* th = (pthread_t*) malloc(sizeof(pthread_t) * threads);
 	
 	start = clock();
+	#pragma omp parallel for
 	for (int i = 0; i < threads; i++) 
 	{
-		//printf("Creating thread %d\n", i);
-		int *arg = malloc(sizeof(*arg));
-		*arg = i;
-		pthread_create(&th[i], NULL, threadFunc, arg);
-	}	
-	for (int i = 0; i < threads; i++)
-	{
-		pthread_join(th[i], NULL);
+		smarandache(i);
 	}
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
@@ -173,16 +155,12 @@ int main(int argc, char **argv)
 	primes = getPrimes(&length);
 	getNumbers();
 	
-	//if (argc != 2) return -1;
-	//threads = atoi(argv[1]);
-	//run();
-
-	for (int i = 1; i <= 8; i++) 
-	{
-		printf("\nRunning with %d threads!\n", i);
-		threads = i;
-		run();
-	}
+	if (argc != 2) return -1;
+	threads = atoi(argv[1]);
+	
+	omp_set_num_threads(threads);
+	
+	run();
 	
 	mpz_clear(a);
 	mpz_clear(b);
