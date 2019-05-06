@@ -54,27 +54,33 @@ work(Q) :-
 	thread_get_message(Q, getnum(Num)),
 	smarandache(Num).
 	
-create_workers(Q, Threads) :-
-	Nr is Threads - 1,
-	foreach(between(0, Nr, X), thread_create(work(Q), X, [])).
+create_workers(_, _, _, []).
+
+create_workers(_, 0, _, _).
 	
-join_threads(Threads) :-
-	Nr is Threads - 1,
-	foreach(betweeen(0, Nr, X), thread_join(X)).
+create_workers(Q, N, Threads, [Id|L]) :-
+	thread_create(work(Q), Id, []),
+	N1 is N - 1,
+	create_workers(Q, N1, Threads, L).
+	
+join_threads([]).
+	
+join_threads([H|T]) :-
+	thread_join(H),
+	join_threads(T).
 	
 master(_, [], _, _).	
 
 master(_, _, N, Threads) :- 
 	N == Threads.
 	
-master([H|T], N, Threads) :-
-	Id is N mod Threads,
-	thread_send_message(Id, getnum(H)),
+master(Q, [H|T], N, Threads) :-
+	thread_send_message(Q, getnum(H)),
 	N1 is N + 1,
-	master(T, N1, Threads). 	
+	master(Q, T, N1, Threads). 	
 	
-create_master(List, Threads) :-
-	master(List, 0, Threads).
+create_master(Q, List, Threads) :-
+	master(Q, List, 0, Threads).
 	
 ex(Time, Threads) :- 
 	A is 2,
@@ -83,7 +89,7 @@ ex(Time, Threads) :-
 	list_numbers(A, B, F, L, C),
 	statistics(walltime, _),
 	message_queue_create(Q),
-	create_master(C, Threads),
-	create_workers(Q, Threads),
-	join_threads(Threads),
+	create_master(Q, C, Threads),
+	create_workers(Q, Threads, Threads, Ids),
+	join_threads(Ids),
 	statistics(walltime, [_|[Time]]).
