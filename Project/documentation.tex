@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Smarandache-Wellin Numbers}
+\author{Nagy Lilla}
+\date{06.05.2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+A Smarandache-Wellin number is the concatenation of the first n prime numbers. A Smarandache-Wellin prime number is a Smarandache-Wellin number that is also a prime. \\
+The Smarandache-Wellin numbers look like this: 2, 23, 235, 2357, ...
+Out of these numbers, the Smarandache-Wellin primes are 2, 23, 2357 and the fourth one has 355 digits, the result of concatenating the first 128 prime numbers.
+
+\section{Solution}
+
+The algorithm is pretty simple and fast, because the only operation we need before checking that the number is prime is a simple concatenation, therefore it reaches big numbers fast. This induces a new problem: big numbers. The data type long long was not enough, because the program would end in seconds, and the search for a big number library had to take into consideration the fact that this library has to be compatible with C and C++ as well, the other language I chose. For Prolog, there is no such problem, because it handles big numbers without any issues. \\
+After lots of trial and error, I decided to use the GMP library for big numbers, because it's compatible with C and C++ as well, and it is one of the most popular big number libraries, so the documentation was pretty good. \\
+To make the solution compatible with multithreading, I first generate the prime numbers until 2000 (or 7500 for Prolog), then I concatenate them and I execute a for for every thread, which checks whether these numbers are primes or not. If so, they are printed to the screen. \\ 
+I measured the time after the numbers have been concatenated, because it works very fast, so I thought I could even have a look-up table or anything similar, and the real power of calculation lays in the prime number algorithm. \\
+For checking whether these big numbers are primes, I have used built-in probabilistic prime number algorithms that check whether a number is prime or not with a certain probability. These are pretty accurate and are much faster than the average prime number algorithm. \\
+When I used OpenMP, I used a parallel for to do the multithreading, and in Prolog, as it was much faster, I needed more numbers to reach a similar time interval as I needed for C or C++.
+
+\section{Results}
+
+\end{document}
