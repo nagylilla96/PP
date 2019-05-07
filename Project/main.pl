@@ -52,18 +52,19 @@ smarandache(Num) :-
 	
 work(Q) :- 
 	thread_get_message(Q, getnum(Num)),
-	Num == 0, writeln("Got finish message").
+	Num == 0, !.
+	%writeln("Got finish message")
 	
 work(Q) :- 
 	thread_get_message(Q, getnum(Num)),
 	smarandache(Num),
-	write("["), write(Num), writeln("]"),
+	%write("["), write(Num), writeln("]"),
 	work(Q).
 
-create_workers(_, 0, _).
+create_workers(_, 0, []) :- !.
 	
 create_workers(Q, N, [Id|L]) :-
-	writeln("Creating workers"),
+	%writeln("Creating workers"),
 	thread_create(work(Q), Id, []),
 	N1 is N - 1,
 	create_workers(Q, N1, L).
@@ -74,28 +75,30 @@ join_threads([H|T]) :-
 	thread_join(H),
 	join_threads(T).
 	
-master(Q, []) :- 
-	M is 0,
-	writeln("Sending finish message"),
-	thread_send_message(Q, getnum(M)).
+master(Q, [], 0) :- thread_send_message(Q, getnum(0)), !.
 	
+master(Q, [], Threads) :- 
+	%writeln("Sending finish message"),
+	thread_send_message(Q, getnum(0)),
+	T1 is Threads - 1,
+	master(Q, [], T1).
 	
-master(Q, [H|T]) :-
+master(Q, [H|T], Threads) :-
 	thread_send_message(Q, getnum(H)),
-	master(Q, T). 	
+	master(Q, T, Threads). 	
 	
-create_master(Q, List) :-
-	master(Q, List).
+create_master(Q, List, Threads) :-
+	master(Q, List, Threads).
 	
 ex(Time, Threads) :- 
 	A is 2,
-	B is 2**100000,	
-	list_primes(2, 7500, [F|L]), 
+	B is 2**1000000,	
+	list_primes(2, 10000, [F|L]), 
 	list_numbers(A, B, F, L, C),
 	statistics(walltime, _),
 	message_queue_create(Q),
-	create_master(Q, C),
-	write("Threads = "), writeln(Threads),
+	create_master(Q, C, Threads),
+	%write("Threads = "), writeln(Threads),
 	create_workers(Q, Threads, Ids),
 	join_threads(Ids),
 	statistics(walltime, [_|[Time]]).

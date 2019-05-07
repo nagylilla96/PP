@@ -15,6 +15,22 @@ mpz_t a, b;
 int length;
 int threads;
 
+class Runner 
+{
+public:
+	void smarandache(int id)
+	{
+		for (int i = id; i < length; i += threads)
+		{
+			int probprime = mpz_probab_prime_p(numbers[i], 15);
+			if ((probprime == 1 || probprime == 2) && (mpz_cmp(numbers[i], a) >= 0))
+			{
+				gmp_printf("%Zd \n", numbers[i]);
+			}
+		}
+	} 
+};
+
 int is_prime(const mpz_t x)
 {
 	mpz_t square, i;
@@ -67,8 +83,7 @@ void print_results(vector<unsigned long long int> nums, int n)
 
 void getNumbers()
 {	
-	numbers = (mpz_t*) malloc(sizeof(mpz_t) * length);
-	
+	numbers = (mpz_t*) malloc(sizeof(mpz_t) * length);	
 	mpz_t conc;
 	mpz_init_set_si(conc, 2);	
 	int i = 0;
@@ -86,6 +101,7 @@ void getNumbers()
 			mpz_clear(conc);
 			return;
 		}		
+		
 		mpz_init_set(numbers[i], conc);		
 		char *mystr = (char*) malloc(10000);
 		mpz_get_str(mystr, 10, conc);		
@@ -96,23 +112,7 @@ void getNumbers()
 		i++;
 	}
 	mpz_clear(conc);
-}	
-
-class Runner 
-{
-public:
-	void smarandache(int id)
-	{
-		for (int i = id; i < length; i += threads)
-		{
-			int probprime = mpz_probab_prime_p(numbers[i], 15);
-			if ((probprime == 1 || probprime == 2) && (mpz_cmp(numbers[i], a) >= 0))
-			{
-				gmp_printf("%Zd \n", numbers[i]);
-			}
-		}
-	} 
-};
+}
 
 void run()
 {
@@ -124,10 +124,12 @@ void run()
 	{
 		v.push_back(thread(&Runner::smarandache, runner, i));
 	}
+	
 	for(auto & th: v)
 	{
 		th.join();
 	}
+	
 	auto finish = std::chrono::high_resolution_clock::now();
 	cout << "Time = " << duration_cast<chrono::duration<double>>(finish - start).count() << " s" << endl;
 	delete runner;

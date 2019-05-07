@@ -36,7 +36,7 @@ int is_prime(const mpz_t x)
 	return 1;
 }
 
-// Get the first primes
+// Get the first 1750 primes
 unsigned long long int* getPrimes(int *n)
 {
 	unsigned long long int *primes = (unsigned long long int*) calloc(1750, sizeof(unsigned long long int));
@@ -142,7 +142,7 @@ void run()
 	}
 	end = clock();
 	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-	printf("Time = %lf s", cpu_time_used);
+	printf("Time = %lf s\n", cpu_time_used);
 }
 
 int main(int argc, char **argv)

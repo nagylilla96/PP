@@ -53,7 +53,7 @@ int is_prime(const mpz_t x)
 	return 1;
 }
 
-// Get the first primes
+// Get the first primes 1750
 unsigned long long int* getPrimes(int *n)
 {
 	unsigned long long int *primes = (unsigned long long int*) calloc(1750, sizeof(unsigned long long int));
@@ -86,8 +86,7 @@ void print_results(unsigned long long int* nums, int n)
 
 void getNumbers()
 {
-	numbers = malloc(sizeof(mpz_t) * length);
-	
+	numbers = malloc(sizeof(mpz_t) * length);	
 	mpz_t conc;
 	mpz_init_set_si(conc, 2);
 
@@ -104,6 +103,7 @@ void getNumbers()
 			mpz_clear(conc);
 			return;
 		}
+		
 		mpz_init_set(numbers[i], conc);
 		char *mystr = (char*) malloc(10000);
 		char *temp = (char*) malloc(10000);
@@ -119,7 +119,6 @@ void getNumbers()
 
 void smarandache()
 {	
-	//printf("\nid = %d, threads = %d\n", id, threads); 
 	#pragma omp parallel for
 	for (int i = 0; i < length; i ++)
 	{
@@ -146,8 +145,7 @@ void run()
 }
 
 int main(int argc, char **argv)
-{
-	
+{	
 	mpz_init_set_si(a, 2);
 	mpz_init(b);
 	mpz_ui_pow_ui(b, 2, 1000000);
@@ -155,10 +153,9 @@ int main(int argc, char **argv)
 	getNumbers();
 	
 	if (argc != 2) return -1;
-	threads = atoi(argv[1]);
 	
-	omp_set_num_threads(threads);
-	
+	threads = atoi(argv[1]);	
+	omp_set_num_threads(threads);	
 	run();
 	
 	mpz_clear(a);
