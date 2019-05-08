@@ -53,6 +53,7 @@ int is_prime(const mpz_t x)
 	return 1;
 }
 
+// Get the first 2000 primes
 vector<unsigned long long int> getPrimes()
 {
 	vector<unsigned long long int> primes;
