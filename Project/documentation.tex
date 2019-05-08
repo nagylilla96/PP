@@ -26,4 +26,6 @@ When I used OpenMP, I used a parallel for to do the multithreading, and in Prolo
 
 \section{Results}
 
+The C++ and OpenMP solutions don't have a speedup, they actually become slower with every new thread. However, the solution written with OpenMP performs better than the one using C, because there is a parallel for which is already better optimized than the one done manually. The C++ solution already performs better, but the best result is given by Prolog, which was also expected, because it is very well optimized and it doesn't require a big number library like all the other solutions do. In conclusion, the best speedup is given by Prolog, with a maximum speedup of 1.88, at 2 threads, because my laptop has two physical CPUs.
+
 \end{document}
