@@ -90,7 +90,7 @@ master(Q, [H|T], Threads) :-
 create_master(Q, List, Threads) :-
 	master(Q, List, Threads).
 	
-ex(Time, Threads) :- 
+project(Time, Threads) :- 
 	A is 2,
 	B is 2**1000000,	
 	list_primes(2, 10000, [F|L]), 
