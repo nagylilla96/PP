@@ -1,5 +1,0 @@
-﻿  main.cpp
-c:\users\lilla\documents\visual studio 2015\projects\pp\project\project\project\main.cpp(91): warning C4101: 'nr': unreferenced local variable
-c:\users\lilla\documents\visual studio 2015\projects\pp\project\project\project\main.cpp(79): warning C4715: 'smarandache': not all control paths return a value
-  Project.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PP\Project\Project\Debug\Project.exe
-  Project.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PP\Project\Project\Debug\Project.pdb (Full PDB)
